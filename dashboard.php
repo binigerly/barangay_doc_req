@@ -18,7 +18,7 @@ $stmt->fetch();
 $stmt->close();
 
 // Fetch user requests
-$query = "SELECT document_type, status, request_date FROM document_requests WHERE user_id = ? ORDER BY request_date DESC";
+$query = "SELECT document_type, purpose, status, request_date FROM document_requests WHERE user_id = ? ORDER BY request_date DESC";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
@@ -65,6 +65,14 @@ $result = $stmt->get_result();
             margin: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .request-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
         .table-container {
             margin-top: 20px;
         }
@@ -99,24 +107,27 @@ $result = $stmt->get_result();
     <div class="sidebar">
         <h2>User Panel</h2>
         <ul>
-        <li><a href="dashboard.php">🏠 Dashboard</a></li>
+            <li><a href="dashboard.php">🏠 Dashboard</a></li>
             <li><a href="request.php">📄 Request a Document</a></li>
             <li><a href="logout.php">🚪 Logout</a></li>
         </ul>
     </div>
     <div class="main-content">
         <h2>Welcome, <?php echo htmlspecialchars($user_name); ?>!</h2>
+        
         <p>Your Recent Requests</p>
         <div class="table-container">
             <table>
                 <tr>
                     <th>DOCUMENT</th>
+                    <th>PURPOSE</th>
                     <th>DATE REQUESTED</th>
                     <th>STATUS</th>
                 </tr>
                 <?php while ($row = $result->fetch_assoc()) { ?>
                     <tr>
                         <td><?php echo htmlspecialchars($row['document_type']); ?></td>
+                        <td><?php echo htmlspecialchars($row['purpose']); ?></td>
                         <td><?php echo date('F j, Y', strtotime($row['request_date'])); ?></td>
                         <td class="status-<?php echo strtolower($row['status']); ?>">
                             <?php echo htmlspecialchars($row['status']); ?>

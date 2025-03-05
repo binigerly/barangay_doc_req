@@ -16,15 +16,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $error = "Email already exists!";
+        $_SESSION['message'] = "❌ Email already exists!";
+        $_SESSION['msg_type'] = "error";
     } else {
         $insert_query = "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($insert_query);
         $stmt->bind_param("sssss", $name, $email, $phone, $password, $role);
         if ($stmt->execute()) {
-            $success = "Registration successful! You can now login.";
+            $_SESSION['message'] = "✅ Registration successful! Redirecting to login...";
+            $_SESSION['msg_type'] = "success";
+            header("refresh:3;url=index.php"); // Redirect after 3 seconds
         } else {
-            $error = "Something went wrong. Please try again.";
+            $_SESSION['message'] = "❌ Something went wrong. Please try again.";
+            $_SESSION['msg_type'] = "error";
         }
     }
 }
@@ -37,41 +41,110 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Barangay Online Documentation</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+            position: relative;
+        }
+        .container {
+            display: flex;
+            width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 50%;
+            background: #ede7f6;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        .right-panel {
+            width: 50%;
+            padding: 40px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #6a1b9a;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #4a148c;
+        }
+        /* Notification Box */
+        .notification {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            font-weight: bold;
+        }
+        .error { background-color: #ff4d4d; } /* Red for error */
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Register</h1>
-        <nav>
-            <ul>
-                <li><a href="index.php">Login</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h2>Create an Account</h2>
-        <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
-        <?php if (isset($success)) { echo "<p style='color: green;'>$success</p>"; } ?>
-        <form method="POST" action="register.php">
-            <label for="name">Full Name:</label>
-            <input type="text" name="name" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" name="email" required>
-            
-            <label for="phone">Phone Number:</label>
-            <input type="text" name="phone" required>
-            
-            <label for="password">Password:</label>
-            <input type="password" name="password" required>
-            
-            <label for="role">Register as:</label>
-            <select name="role" required>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="notification <?php echo $_SESSION['msg_type']; ?>" id="notif-box">
+            <?php echo $_SESSION['message']; ?>
+        </div>
+        <script>
+            document.getElementById("notif-box").style.display = "block";
+            setTimeout(function() {
+                document.getElementById("notif-box").style.display = "none";
+            }, 3000);
+        </script>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
 
-            <button type="submit">Register</button>
-        </form>
-    </main>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Welcome</h2>
+            <p>Please fill out the form to register for an account.</p>
+            <a href="index.php"><button>Login</button></a>
+        </div>
+        <div class="right-panel">
+            <h2>Sign Up</h2>
+            <form method="POST" action="register.php">
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="phone" placeholder="Phone Number" required>
+                <input type="password" name="password" placeholder="Password" required>
+                
+                <select name="role" required>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
