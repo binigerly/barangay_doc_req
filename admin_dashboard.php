@@ -135,37 +135,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['request_id']) && isset
         <h2>Welcome, <?php echo htmlspecialchars($admin_name); ?>!</h2>
         <p>Recent Requests</p>
         <div class="table-container">
-            <table>
-                <tr>
-                    <th>NAME</th>
-                    <th>DOCUMENT</th>
-                    <th>PURPOSE</th> <!-- New Column -->
-                    <th>DATE REQUESTED</th>
-                    <th>STATUS</th>
-                    <th>ACTION</th>
-                </tr>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($row['name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['document_type']); ?></td>
-                        <td><?php echo htmlspecialchars($row['purpose']); ?></td> <!-- Display Purpose -->
-                        <td><?php echo date('F j, Y', strtotime($row['request_date'])); ?></td>
-                        <td class="<?php echo $row['status'] == 'Pending' ? 'status-pending' : 'status-approved'; ?>">
-                            <?php echo htmlspecialchars($row['status']); ?>
-                        </td>
-                        <td>
-                            <?php if ($row['status'] == 'Pending') { ?>
-                                <form method="POST" action="admin_dashboard.php">
-                                    <input type="hidden" name="request_id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" name="action" value="approve" class="btn btn-approve">Approve</button>
-                                    <button type="submit" name="action" value="deny" class="btn btn-deny">Deny</button>
-                                </form>
-                            <?php } else { echo "No action needed"; } ?>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </table>
-        </div>
+        <table>
+    <tr>
+        <th>NAME</th>
+        <th>DOCUMENT</th>
+        <th>PURPOSE</th>
+        <th>DATE REQUESTED</th>
+        <th>STATUS</th>
+        <th>ACTION</th>
+    </tr>
+    <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['name']); ?></td>
+            <td><?php echo htmlspecialchars($row['document_type']); ?></td>
+            <td><?php echo htmlspecialchars($row['purpose']); ?></td>
+            <td><?php echo date('F j, Y', strtotime($row['request_date'])); ?></td>
+            <td class="status-<?php echo strtolower($row['status']); ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
+            </td>
+            <td>
+                <?php if ($row['status'] == 'Pending') { ?>
+                    <form method="POST" action="admin_dashboard.php">
+                        <input type="hidden" name="request_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" name="action" value="approve" class="btn btn-approve">Approve</button>
+                        <button type="submit" name="action" value="deny" class="btn btn-deny">Deny</button>
+                    </form>
+                <?php } else { echo "No action needed"; } ?>
+            </td>
+        </tr>
+    <?php } ?>
+</table>        </div>
     </div>
 </body>
 </html>

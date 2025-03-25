@@ -14,16 +14,21 @@ if (!$document || !$purpose) {
     die("Missing required fields.");
 }
 
-// Connect to DB and insert the request
+// Insert the request into the database
 $query = "INSERT INTO document_requests (user_id, document_type, purpose, status, request_date) VALUES (?, ?, ?, 'Pending', NOW())";
 $stmt = $conn->prepare($query);
+
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
 $stmt->bind_param("iss", $user_id, $document, $purpose);
 
 if ($stmt->execute()) {
-    echo "Request submitted successfully.";
-    header("Location: dashboard.php"); // Redirect to dashboard
+    // Redirect to the user dashboard
+    header("Location: dashboard.php");
     exit();
 } else {
-    die("Database error: " . $conn->error);
+    die("Database error: " . $stmt->error);
 }
 ?>
