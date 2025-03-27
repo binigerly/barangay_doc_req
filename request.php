@@ -121,8 +121,12 @@ $result = $stmt->get_result();
                 <label for="document">Select Document:</label>
                 <select name="document" id="document" required>
                     <option value="Barangay Clearance">Barangay Clearance</option>
-                    <option value="Barangay ID">Barangay ID</option>
-                    <option value="Business Permit">Business Permit</option>
+                    <option value="Certificate of Residency">Certificate of Residency</option>
+                    <option value="Certificate of Indigency">Certificate of Indigency</option>
+                    <option value="Certificate of Good Moral Character">Certificate of Good Moral Character</option>
+                    <option value="Barangay Blotter Report">Barangay Blotter Report</option>
+                    <option value="Barangay Protection Order">Barangay Protection Order</option>
+                    <option value="Barangay Business Permit">Barangay Business Permit</option>
                 </select>
                 <br>
                 <label for="purpose">Purpose:</label>

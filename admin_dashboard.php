@@ -29,18 +29,38 @@ $result = $stmt->get_result();
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['request_id']) && isset($_POST['action'])) {
     $request_id = $_POST['request_id'];
     $action = $_POST['action'];
-    
+
+    // Validate action
+    if (!in_array($action, ['approve', 'deny'])) {
+        die("Invalid action.");
+    }
+
+    // Prepare the update query based on the action
     if ($action == "approve") {
         $update_query = "UPDATE document_requests SET status = 'Approved' WHERE id = ?";
     } elseif ($action == "deny") {
         $update_query = "UPDATE document_requests SET status = 'Denied' WHERE id = ?";
     }
-    
+
     $stmt = $conn->prepare($update_query);
+
+    // Debugging: Log database errors
+    if (!$stmt) {
+        file_put_contents('debug.log', "Prepare failed: " . $conn->error . "\n", FILE_APPEND);
+        die("Prepare failed: " . $conn->error);
+    }
+
     $stmt->bind_param("i", $request_id);
-    $stmt->execute();
-    header("Location: admin_dashboard.php");
-    exit();
+
+    if ($stmt->execute()) {
+        // Debugging: Log successful updates
+        file_put_contents('debug.log', "Request ID $request_id updated to $action\n", FILE_APPEND);
+        header("Location: admin_dashboard.php");
+        exit();
+    } else {
+        file_put_contents('debug.log', "Database error: " . $stmt->error . "\n", FILE_APPEND);
+        die("Database error: " . $stmt->error);
+    }
 }
 ?>
 <!DOCTYPE html>

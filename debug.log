@@ -1,0 +1,46 @@
+Array
+(
+    [document] => Business Permit
+    [purpose] => school
+)
+Array
+(
+    [document] => Barangay ID
+    [purpose] => school
+)
+Array
+(
+    [document] => Barangay Clearance
+    [purpose] => school
+)
+Array
+(
+    [document] => Barangay Clearance
+    [purpose] => for our business in town
+)
+Submitted data: Array
+(
+    [document] => Certificate of Indigency
+    [purpose] => yeah
+)
+Request successfully inserted for user ID 8
+Submitted data: Array
+(
+    [document] => Barangay Protection Order
+    [purpose] => for our business in town
+)
+Request successfully inserted for user ID 8
+Submitted data: Array
+(
+    [document] => Barangay Blotter Report
+    [purpose] => for my father because he abused me.
+)
+Request successfully inserted for user ID 9
+Request ID 23 updated to approve
+Submitted data: Array
+(
+    [document] => Barangay Business Permit
+    [purpose] => for my flower business
+)
+Request successfully inserted for user ID 10
+Request ID 24 updated to approve

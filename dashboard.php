@@ -20,9 +20,20 @@ $stmt->close();
 // Fetch user requests
 $query = "SELECT document_type, purpose, status, request_date FROM document_requests WHERE user_id = ? ORDER BY request_date DESC";
 $stmt = $conn->prepare($query);
+
+if (!$stmt) {
+    file_put_contents('debug.log', "Prepare failed: " . $conn->error . "\n", FILE_APPEND);
+    die("Prepare failed: " . $conn->error);
+}
+
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
+
+if (!$result) {
+    file_put_contents('debug.log', "Query execution failed: " . $stmt->error . "\n", FILE_APPEND);
+    die("Query execution failed: " . $stmt->error);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
